@@ -12,7 +12,7 @@ namespace APICatalog.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Products_Categories_CategoryId",
-                table: "Products");
+                table: "Product");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Categories",
@@ -24,14 +24,14 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<decimal>(
                 name: "Price",
-                table: "Products",
+                table: "Product",
                 type: "decimal(10,2)",
                 nullable: false,
                 oldClrType: typeof(decimal),
                 oldType: "decimal(65,30)");
 
             migrationBuilder.UpdateData(
-                table: "Products",
+                table: "Product",
                 keyColumn: "Name",
                 keyValue: null,
                 column: "Name",
@@ -39,7 +39,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                table: "Products",
+                table: "Product",
                 type: "varchar(80)",
                 maxLength: 80,
                 nullable: false,
@@ -50,7 +50,7 @@ namespace APICatalog.Migrations
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.UpdateData(
-                table: "Products",
+                table: "Product",
                 keyColumn: "ImageUrl",
                 keyValue: null,
                 column: "ImageUrl",
@@ -58,7 +58,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "ImageUrl",
-                table: "Products",
+                table: "Product",
                 type: "varchar(300)",
                 maxLength: 300,
                 nullable: false,
@@ -69,7 +69,7 @@ namespace APICatalog.Migrations
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.UpdateData(
-                table: "Products",
+                table: "Product",
                 keyColumn: "Description",
                 keyValue: null,
                 column: "Description",
@@ -77,7 +77,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
-                table: "Products",
+                table: "Product",
                 type: "varchar(300)",
                 maxLength: 300,
                 nullable: false,
@@ -132,7 +132,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Products_Category_CategoryId",
-                table: "Products",
+                table: "Product",
                 column: "CategoryId",
                 principalTable: "Category",
                 principalColumn: "CategoryId",
@@ -144,7 +144,7 @@ namespace APICatalog.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Products_Category_CategoryId",
-                table: "Products");
+                table: "Product");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Category",
@@ -156,7 +156,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<decimal>(
                 name: "Price",
-                table: "Products",
+                table: "Product",
                 type: "decimal(65,30)",
                 nullable: false,
                 oldClrType: typeof(decimal),
@@ -164,7 +164,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                table: "Products",
+                table: "Product",
                 type: "longtext",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -175,7 +175,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "ImageUrl",
-                table: "Products",
+                table: "Product",
                 type: "longtext",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -186,7 +186,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
-                table: "Products",
+                table: "Product",
                 type: "longtext",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -224,7 +224,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Products_Categories_CategoryId",
-                table: "Products",
+                table: "Product",
                 column: "CategoryId",
                 principalTable: "Category",
                 principalColumn: "CategoryId",

@@ -33,7 +33,7 @@ namespace APICatalog.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "Product",
                 columns: table => new
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false)
@@ -63,7 +63,7 @@ namespace APICatalog.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
-                table: "Products",
+                table: "Product",
                 column: "CategoryId");
         }
 
@@ -71,7 +71,7 @@ namespace APICatalog.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Product");
 
             migrationBuilder.DropTable(
                 name: "Category");

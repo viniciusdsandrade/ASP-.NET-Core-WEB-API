@@ -5,15 +5,13 @@ namespace APICatalog.Models;
 
 public class Category
 {
-    public Category()
-    {
-        Products = new Collection<Product>();
-    }
+    public Category() => Products = new Collection<Product>();
 
     [Key] public int CategoryId { get; init; }
-    [Required] [StringLength(80)] public string? Name { get; init; }
-    [Required] [StringLength(300)] public string? ImageUrl { get; init; }
+    [Required] [StringLength(80)] public string? Name { get; set; }
+    [Required] [StringLength(300)] public string? ImageUrl { get; set; }
 
-    // Incluimos uma propriedade ede navegação onde definimos que uma Categoria pode conter uma coleção de Produtos
+    // Incluimos uma propriedade ede navegação onde definimos que uma Categoria
+    // pode conter uma coleção de Produtos
     public ICollection<Product>? Products { get; init; }
 }

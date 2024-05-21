@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace APICatalog.Models;
 
 public class Product
 {
-    public Product()
-    {
-        CreatedDate = DateTime.Now;
-    }
+    public Product() => CreatedDate = DateTime.Now;
 
     [Key] public int ProductId { get; init; }
 
@@ -23,8 +21,11 @@ public class Product
     public int Stock { get; init; }
 
     public DateTime CreatedDate { get; init; }
+    // public DateTime? UpdatedDate { get; init; }
 
-    // Incluimos uma propriedade 'CategoryId' que mapeia para a chave estrangeira no banco de dados e uma propriedade de navegação 'Category' para indicar que um Produto está relacionado com UMA Categoria
+    // Incluimos uma propriedade 'CategoryId' que mapeia para a chave estrangeira no banco de dados e
+    // uma propriedade de navegação 'Category' para indicar que um Produto está relacionado com UMA Categoria
     public int CategoryId { get; init; }
-    public Category? Category { get; init; }
+
+    [JsonIgnore] public Category? Category { get; init; }
 }

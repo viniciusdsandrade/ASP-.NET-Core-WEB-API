@@ -1,5 +1,6 @@
 ﻿using APICatalog.Models;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace APICatalog.Context;
 
@@ -10,6 +11,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.HasDefaultSchema("db_catalog_api");
     }
 
-    public DbSet<Category> Category { get; set; }
-    public DbSet<Product> Products { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseMySql(
+                "Server=localhost;Database=db_catalog_api;Uid=root;Pwd=GhostSthong567890@",
+                ServerVersion.AutoDetect("Server=localhost;Database=db_catalog_api;Uid=root;Pwd=GhostSthong567890@"),
+                options => options.SchemaBehavior(MySqlSchemaBehavior.Ignore));
+        }
+    }
+
+    public DbSet<Category> Category { get; init; }
+    public DbSet<Product> Products { get; init; }
 }
