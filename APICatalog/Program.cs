@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using APICatalog.Context;
+using APICatalog.Handler;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,8 +30,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Configurar o ExceptionHandler CORRETAMENTE
+app.ConfigureExceptionHandler();
+
+app.Use(async (context, next) =>
+{
+    // adicionar o código antes do request
+    await next();
+    // adicionar o código depois do request
+});
 
 app.MapControllers();
 

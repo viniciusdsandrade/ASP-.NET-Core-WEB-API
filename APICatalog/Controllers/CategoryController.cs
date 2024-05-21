@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace APICatalog.Controllers;
 
 [ApiController]
-[Route("/api/v1/[controller]")]
+[Route("api/v1/[controller]")]
 public class CategoryController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -14,7 +14,7 @@ public class CategoryController : ControllerBase
     public CategoryController(AppDbContext context) => _context = context;
 
     [HttpPost]
-    public async Task<ActionResult<CategoryDetailsDto>> PostCategory(CategoryDto? categoryDto)
+    public async Task<ActionResult<CategoryDetailsDto>> CreateCategory(CategoryDto? categoryDto)
     {
         if (categoryDto is null) return BadRequest("Category data is null.");
 
@@ -27,32 +27,24 @@ public class CategoryController : ControllerBase
         await _context.Category.AddAsync(category);
         await _context.SaveChangesAsync();
 
-        var categoryDetailsDto = new CategoryDetailsDto(
-            category.CategoryId,
-            category.Name!,
-            category.ImageUrl!,
-            [] // Inicializa a lista de produtos
-        );
+        // Cria o DTO usando o construtor
+        var categoryDetailsDto = new CategoryDetailsDto(category);
 
-        return CreatedAtAction(nameof(GetCategoryDetails), new { id = category.CategoryId }, categoryDetailsDto);
+        return CreatedAtAction(nameof(GetCategoryById), new { id = category.CategoryId }, categoryDetailsDto);
     }
 
-    [HttpGet("details/{id:int}", Name = "GetCategoryDetails")]
-    public async Task<ActionResult<CategoryDetailsDto>> GetCategoryDetails(int id)
+    [HttpGet("{id:int}", Name = "GetCategoryById")]
+    public async Task<ActionResult<CategoryDetailsDto>> GetCategoryById(int id)
     {
         var category = await _context.Category
-            .Include(c => c.Products) // Carregamos os produtos relacionados
+            .Include(c => c.Products)
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.CategoryId == id);
 
         if (category is null) return NotFound($"Category with id {id} not found.");
 
-        var categoryDetailsDto = new CategoryDetailsDto(
-            category.CategoryId,
-            category.Name!,
-            category.ImageUrl!,
-            category.Products?.Select(p => p.Name).ToList()! // Obtemos os nomes dos produtos
-        );
+        // Cria o DTO usando o construtor
+        var categoryDetailsDto = new CategoryDetailsDto(category);
 
         return Ok(categoryDetailsDto);
     }
@@ -61,7 +53,7 @@ public class CategoryController : ControllerBase
     public async Task<ActionResult<IEnumerable<CategoryDetailsDto>>> GetCategories(int page = 1, int pageSize = 10)
     {
         var categories = await _context.Category
-            .Include(c => c.Products) // Carregamos os produtos relacionados
+            .Include(c => c.Products)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .AsNoTracking()
@@ -69,70 +61,52 @@ public class CategoryController : ControllerBase
 
         if (categories.Count == 0) return NotFound("No categories found.");
 
-        var categoriesDetailsDto = categories.Select(c => new CategoryDetailsDto(
-            c.CategoryId,
-            c.Name!,
-            c.ImageUrl!,
-            c.Products?.Select(p => p.Name).ToList()! // Obtemos os nomes dos produtos
-        ));
-
+        // Cria uma lista de DTOs usando o construtor
+        var categoriesDetailsDto = categories.Select(c => new CategoryDetailsDto(c));
 
         return Ok(categoriesDetailsDto);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<CategoryDetailsDto>> PutCategory(int id, Category? category)
+    public async Task<ActionResult<CategoryDetailsDto>> UpdateCategory(int id, CategoryDto? categoryDto)
     {
-        if (category is null) return BadRequest("Category data is null.");
-
+        if (categoryDto is null) return BadRequest("Category data is null.");
         var existingCategory = await _context.Category.FindAsync(id);
-
         if (existingCategory is null) return NotFound($"Category with id {id} not found.");
 
-        // Atualiza as propriedades da categoria existente
-        existingCategory.Name = category.Name;
-        existingCategory.ImageUrl = category.ImageUrl;
+        existingCategory.Name = categoryDto.Name;
+        existingCategory.ImageUrl = categoryDto.ImageUrl;
 
-        // Salva as alterações no banco de dados
         await _context.SaveChangesAsync();
 
-        // Carrega os produtos relacionados APÓS a atualização
+        // Recarrega os produtos relacionados após a atualização
         await _context.Entry(existingCategory)
             .Collection(c => c.Products!)
+            .Query()
+            .AsNoTracking()
             .LoadAsync();
 
-        // Cria o DTO com os dados atualizados, incluindo os produtos
-        var categoryDetailsDto = new CategoryDetailsDto(
-            existingCategory.CategoryId,
-            existingCategory.Name!,
-            existingCategory.ImageUrl!,
-            existingCategory.Products?.Select(p => p.Name).ToList()!
-        );
+        // Cria o DTO usando o construtor
+        var categoryDetailsDto = new CategoryDetailsDto(existingCategory);
 
-        return CreatedAtAction(nameof(GetCategoryDetails), new { id = existingCategory.CategoryId },
-            categoryDetailsDto);
+        return CreatedAtAction(nameof(GetCategoryById), new { id = existingCategory.CategoryId }, categoryDetailsDto);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<CategoryDetailsDto>> DeleteCategory(int id)
     {
         var category = await _context.Category
-            .Include(c => c.Products) // Carrega os produtos relacionados
+            .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.CategoryId == id);
 
         if (category is null) return NotFound($"Category with id {id} not found.");
-
         if (category.Products!.Count != 0) return BadRequest("Cannot delete category with associated products.");
 
         _context.Category.Remove(category);
         await _context.SaveChangesAsync();
 
-        var categoryDetailsDto = new CategoryDetailsDto(
-            category.CategoryId,
-            category.Name!,
-            category.ImageUrl!,
-            category.Products?.Select(p => p.Name).ToList()!
-        );
+        // Cria o DTO usando o construtor
+        var categoryDetailsDto = new CategoryDetailsDto(category);
 
         return Ok(categoryDetailsDto);
     }
