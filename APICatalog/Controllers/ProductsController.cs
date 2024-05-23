@@ -1,4 +1,5 @@
 ﻿using APICatalog.Context;
+using APICatalog.Filters;
 using APICatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +11,73 @@ namespace APICatalog.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<ProductsController> _logger;
 
-    public ProductsController(AppDbContext context) => _context = context;
+    public ProductsController(AppDbContext context, ILogger<ProductsController> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
+
+    // GET api/v1/products
+    [HttpGet]
+    [ServiceFilter(typeof(ApiLoggingFilterAsync))]
+    public async Task<ActionResult<IEnumerable<ProductDetailsDto>>> GetProducts(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10
+    )
+     {
+        _logger.LogInformation("=============GET api/v1/products=========================");
+
+        if (page <= 0) return BadRequest("Page must be greater than zero.");
+        if (pageSize is <= 0 or > 100) return BadRequest("Page size must be between 1 and 100.");
+
+        var products = await _context.Products
+            .Include(p => p.Category)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+
+        if (products.Count == 0) return NotFound("No products found for the specified page.");
+
+        // Cria uma lista de DTOs usando o construtor
+        var productDetailsDtos = products.Select(p => new ProductDetailsDto(p, includeCategoryName: true));
+        return Ok(productDetailsDtos);
+    }
+
+    // GET api/v1/products/name/{name}
+    [HttpGet("name/{name}")]
+    [ServiceFilter(typeof(ApiLoggingFilterAsync))]
+    public async Task<ActionResult<IEnumerable<ProductDetailsDto>>> GetProductsByName(string name)
+    {
+        var products = await _context.Products
+            .Include(p => p.Category)
+            .Where(p => p.Name!.Contains(name))
+            .AsNoTracking()
+            .ToListAsync();
+
+        if (products.Count == 0) return NotFound("No products found with the specified name.");
+
+        // Cria uma lista de DTOs usando o construtor
+        var productDetailsDtos = products.Select(p => new ProductDetailsDto(p, includeCategoryName: true));
+        return Ok(productDetailsDtos);
+    }
+
+    // GET api/v1/products/{id}
+    [HttpGet("{id:int}", Name = "GetProductById")]
+    [ServiceFilter(typeof(ApiLoggingFilterAsync))]
+    public async Task<ActionResult<ProductDetailsDto>> GetProductById(int id)
+    {
+        var product = await _context.Products
+            .Include(p => p.Category)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.ProductId == id);
+
+        if (product == null) return NotFound("Product not found.");
+
+        return Ok(new ProductDetailsDto(product, includeCategoryName: true));
+    }
 
     // POST api/v1/products
     [HttpPost]
@@ -76,59 +142,5 @@ public class ProductsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new ProductDetailsDto(product, includeCategoryName: true));
-    }
-
-    // GET api/v1/products/{id}
-    [HttpGet("{id:int}", Name = "GetProductById")]
-    public async Task<ActionResult<ProductDetailsDto>> GetProductById(int id)
-    {
-        var product = await _context.Products
-            .Include(p => p.Category)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.ProductId == id);
-
-        if (product == null) return NotFound("Product not found.");
-
-        return Ok(new ProductDetailsDto(product, includeCategoryName: true));
-    }
-
-    // GET api/v1/products
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDetailsDto>>> GetProducts(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
-    {
-        if (page <= 0) return BadRequest("Page must be greater than zero.");
-        if (pageSize is <= 0 or > 100) return BadRequest("Page size must be between 1 and 100.");
-
-        var products = await _context.Products
-            .Include(p => p.Category)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .AsNoTracking()
-            .ToListAsync();
-
-        if (products.Count == 0) return NotFound("No products found for the specified page.");
-
-        // Cria uma lista de DTOs usando o construtor
-        var productDetailsDtos = products.Select(p => new ProductDetailsDto(p, includeCategoryName: true));
-        return Ok(productDetailsDtos);
-    }
-
-    // GET api/v1/products/name/{name}
-    [HttpGet("name/{name}")]
-    public async Task<ActionResult<IEnumerable<ProductDetailsDto>>> GetProductsByName(string name)
-    {
-        var products = await _context.Products
-            .Include(p => p.Category)
-            .Where(p => p.Name!.Contains(name))
-            .AsNoTracking()
-            .ToListAsync();
-
-        if (products.Count == 0) return NotFound("No products found with the specified name.");
-
-        // Cria uma lista de DTOs usando o construtor
-        var productDetailsDtos = products.Select(p => new ProductDetailsDto(p, includeCategoryName: true));
-        return Ok(productDetailsDtos);
     }
 }
