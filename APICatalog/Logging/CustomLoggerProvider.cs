@@ -4,21 +4,21 @@ namespace APICatalog.Logging;
 
 public class CustomLoggerProvider : ILoggerProvider
 {
-    readonly CustomLoggerProviderConfiguration loggerConfig;
-    readonly ConcurrentDictionary<string, CustomerLogger> loggers = new();
+    private readonly CustomLoggerProviderConfiguration _loggerConfig;
+    private readonly ConcurrentDictionary<string, CustomerLogger> _loggers = new();
 
     public CustomLoggerProvider(CustomLoggerProviderConfiguration loggerConfig)
     {
-        this.loggerConfig = loggerConfig;
+        _loggerConfig = loggerConfig;
     }
 
     public ILogger CreateLogger(string categoryName)
     {
-        return loggers.GetOrAdd(categoryName, name => new CustomerLogger(name, loggerConfig));
+        return _loggers.GetOrAdd(categoryName, name => new CustomerLogger(name, _loggerConfig));
     }
 
     public void Dispose()
     {
-        loggers.Clear();
+        _loggers.Clear();
     }
 }

@@ -4,6 +4,7 @@ using APICatalog.Filters;
 using APICatalog.Handler;
 using APICatalog.Logging;
 using APICatalog.Repositories.Async;
+using APICatalog.Repositories.Generic;
 using APICatalog.Repositories.Sync; // Adicione este using
 using Microsoft.EntityFrameworkCore;
 
@@ -30,18 +31,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(mySqlConnectionStr,
         ServerVersion.AutoDetect(mySqlConnectionStr)));
 
-// Registro da dependência do ICategoryRepositoryAsync
 builder.Services.AddScoped<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
-
-// Registro da dependência do IProductRepositoryAsync
 builder.Services.AddScoped<IProductRepositoryAsync, ProductRepositoryAsync>();
-
-// Registro da dependência do IcategoryRepositorySync
 builder.Services.AddScoped<ICategoryRepositorySync, CategoryRepositorySync>();
-
-// Registro de dependência do IProductRepositorySync
 builder.Services.AddScoped<IProductRepositorySync, ProductRepositorySync>();
-
+builder.Services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
+builder.Services.AddScoped(typeof(IRepositorySync<>), typeof(RepositorySync<>));
 
 builder.Services.AddScoped<ApiLoggingFilterSync>();
 builder.Services.AddScoped<ApiLoggingFilterAsync>();

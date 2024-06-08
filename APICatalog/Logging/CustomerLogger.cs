@@ -2,8 +2,8 @@ namespace APICatalog.Logging;
 
 public class CustomerLogger : ILogger
 {
-    readonly string LoggerName;
-    readonly CustomLoggerProviderConfiguration LoggerConfig;
+    private readonly string _loggerName;
+    private readonly CustomLoggerProviderConfiguration _loggerConfig;
 
     private const string CaminhoRepositorioLog =
         @"C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\Logging\log\Vinicius_Log.txt";
@@ -13,13 +13,13 @@ public class CustomerLogger : ILogger
 
     public CustomerLogger(string loggerName, CustomLoggerProviderConfiguration loggerConfig)
     {
-        LoggerName = loggerName;
-        LoggerConfig = loggerConfig;
+        _loggerName = loggerName;
+        _loggerConfig = loggerConfig;
     }
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return logLevel == LoggerConfig.LogLevel;
+        return logLevel == _loggerConfig.LogLevel;
     }
 
     public void Log<TState>(LogLevel logLevel,

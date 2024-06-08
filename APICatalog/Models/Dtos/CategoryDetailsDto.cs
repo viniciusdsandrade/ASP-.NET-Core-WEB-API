@@ -1,4 +1,4 @@
-namespace APICatalog.Models;
+namespace APICatalog.Models.Dtos;
 
 public class CategoryDetailsDto
 {

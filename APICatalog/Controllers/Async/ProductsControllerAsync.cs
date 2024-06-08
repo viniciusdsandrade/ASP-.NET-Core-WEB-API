@@ -1,4 +1,5 @@
 ﻿using APICatalog.Models;
+using APICatalog.Models.Dtos;
 using APICatalog.Repositories.Async;
 using Microsoft.AspNetCore.Mvc;
 
