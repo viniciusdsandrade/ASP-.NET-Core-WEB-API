@@ -6,6 +6,9 @@ using APICatalog.Logging;
 using APICatalog.Repositories.Async;
 using APICatalog.Repositories.Generic;
 using APICatalog.Repositories.Sync;
+using APICatalog.Repositories.UnitOfWork;
+using APICatalog.Repositories.UnitOfWork.Async;
+using APICatalog.Repositories.UnitOfWork.Sync;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +43,8 @@ builder.Services.AddScoped(typeof(IRepositorySync<>), typeof(RepositorySync<>));
 builder.Services.AddScoped<ApiExceptionFilter>();
 builder.Services.AddScoped<ApiLoggingFilterSync>();
 builder.Services.AddScoped<ApiLoggingFilterAsync>();
+builder.Services.AddScoped<IUnitOfWorkAsync, UnitOfWorkAsync>();
+builder.Services.AddScoped<IUnitOfWorkSync, UnitOfWorkSync>();
 
 builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
 {

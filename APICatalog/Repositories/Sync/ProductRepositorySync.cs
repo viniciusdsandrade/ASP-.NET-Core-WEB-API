@@ -17,9 +17,7 @@ public class ProductRepositorySync : IProductRepositorySync
     public Product GetById(int id)
     {
         var produto = _context.Products.FirstOrDefault(p => p.ProductId == id);
-
         if (produto == null) throw new Exception("Product not found");
-
         return produto;
     }
 

@@ -12,26 +12,24 @@ public class RepositorySync<T> : IRepositorySync<T> where T : class
 
     public RepositorySync(AppDbContext context) => _context = context;
 
-    public IEnumerable<T?> GetAll() => DbSet.ToList();
+    public IEnumerable<T?> GetAll() => DbSet.AsNoTracking().ToList(); // AsNoTracking adicionado para otimização
 
-    public IQueryable<T?> GetAllQueryable() => DbSet;
+    public IQueryable<T?> GetAllQueryable() => DbSet.AsNoTracking(); // AsNoTracking adicionado para otimização
 
-    public T? GetById(int id) => DbSet.Find(id);
+    public T? GetById(int id) => DbSet.Find(id); // Mantido Find para chave primária
 
     public T Create(T? entity)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
         DbSet.Add(entity);
-        _context.SaveChanges();
-        return entity;
+        return entity; // Removido SaveChanges, pois será chamado no UnitOfWork
     }
 
     public T Update(T? entity)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
         DbSet.Update(entity);
-        _context.SaveChanges();
-        return entity;
+        return entity; // Removido SaveChanges, pois será chamado no UnitOfWork
     }
 
     public T DeleteById(int id)
@@ -40,13 +38,11 @@ public class RepositorySync<T> : IRepositorySync<T> where T : class
         if (entity == null)
             throw new EntityNotFoundException($"Entidade do tipo {typeof(T).Name} com ID {id} não encontrada.");
         DbSet.Remove(entity);
-        _context.SaveChanges();
-        return entity;
+        return entity; // Removido SaveChanges, pois será chamado no UnitOfWork
     }
 
     public bool Exists(int id)
     {
-        // Check if any entity with the given ID exists (assuming your entities have an "Id" property)
         return DbSet.Any(e => EF.Property<int>(e, "Id") == id);
     }
 

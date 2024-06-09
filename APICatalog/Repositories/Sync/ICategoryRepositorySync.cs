@@ -8,5 +8,5 @@ public interface ICategoryRepositorySync
     Category GetById(int id);
     Category Create(Category category);
     Category Update(Category category);
-    Category Delete(int id);
+    void Delete(int id);
 }

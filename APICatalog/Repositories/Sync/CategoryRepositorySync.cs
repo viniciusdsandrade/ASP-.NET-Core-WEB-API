@@ -1,14 +1,18 @@
 using APICatalog.Context;
 using APICatalog.Models;
+using APICatalog.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalog.Repositories.Sync;
 
-public class CategoryRepositorySync : ICategoryRepositorySync
+public class CategoryRepositorySync : RepositorySync<Category>, ICategoryRepositorySync
 {
     private readonly AppDbContext _context;
 
-    public CategoryRepositorySync(AppDbContext context) => _context = context;
+    public CategoryRepositorySync(AppDbContext context) : base(context)
+    {
+        _context = context;
+    }
 
     public IEnumerable<Category> GetAll(int page, int pageSize)
     {
@@ -20,7 +24,7 @@ public class CategoryRepositorySync : ICategoryRepositorySync
             .ToList();
     }
 
-    public Category GetById(int id)
+    public new Category GetById(int id)
     {
         return _context.Category
                    .Include(c => c.Products)
@@ -29,21 +33,21 @@ public class CategoryRepositorySync : ICategoryRepositorySync
                ?? throw new Exception($"Categoria não encontrada com ID: {id}");
     }
 
-    public Category Create(Category category)
+    public new Category Create(Category category)
     {
         _context.Category.Add(category);
         _context.SaveChanges();
         return category;
     }
 
-    public Category Update(Category category)
+    public new Category Update(Category category)
     {
         _context.Entry(category).State = EntityState.Modified;
         _context.SaveChanges();
         return category;
     }
 
-    public Category Delete(int id)
+    public void Delete(int id)
     {
         var category = _context.Category.Find(id);
 
@@ -56,6 +60,5 @@ public class CategoryRepositorySync : ICategoryRepositorySync
 
         _context.Category.Remove(category);
         _context.SaveChanges();
-        return category;
     }
 }
