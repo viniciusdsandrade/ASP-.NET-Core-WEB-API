@@ -7,14 +7,22 @@ namespace APICatalog.Controllers.Sync;
 
 [ApiController]
 [Route("api/v1/sync/[controller]")]
-public class CategoryControllerSync(
-    IUnitOfWorkSync uof,
-    ILogger<CategoryControllerSync> logger) : ControllerBase
+public class CategoryControllerSync : ControllerBase
 {
+    private readonly IUnitOfWorkSync _uof;
+    private readonly ILogger<CategoryControllerSync> _logger;
+
+    public CategoryControllerSync(IUnitOfWorkSync uof,
+        ILogger<CategoryControllerSync> logger)
+    {
+        _uof = uof;
+        _logger = logger;
+    }
+
     [HttpGet]
     public ActionResult<IEnumerable<CategoryDetailsDto>> GetCategories(int page = 1, int pageSize = 10)
     {
-        var categories = uof.CategoryRepositorySync.GetAll(page, pageSize);
+        var categories = _uof.CategoryRepositorySync.GetAll(page, pageSize);
         var categoriesDto = categories.Select(c => new CategoryDetailsDto(c));
         return Ok(categoriesDto);
     }
@@ -22,7 +30,7 @@ public class CategoryControllerSync(
     [HttpGet("{id:int}", Name = "GetCategoryByIdSync")]
     public ActionResult<CategoryDetailsDto> GetById(int id)
     {
-        var category = uof.CategoryRepositorySync.GetById(id);
+        var category = _uof.CategoryRepositorySync.GetById(id);
         var categoryDto = new CategoryDetailsDto(category);
         return Ok(categoryDto);
     }
@@ -32,7 +40,7 @@ public class CategoryControllerSync(
     {
         if (categoryDto == null)
         {
-            logger.LogWarning("Requisição para criar categoria recebida com dados inválidos.");
+            _logger.LogWarning("Requisição para criar categoria recebida com dados inválidos.");
             return BadRequest("Dados da categoria inválidos.");
         }
 
@@ -42,7 +50,7 @@ public class CategoryControllerSync(
             ImageUrl = categoryDto.ImageUrl
         };
 
-        var createdCategory = uof.CategoryRepositorySync.Create(category);
+        var createdCategory = _uof.CategoryRepositorySync.Create(category);
         var categoryDetailsDto = new CategoryDetailsDto(createdCategory);
 
         return CreatedAtRoute("GetCategoryByIdSync", new { id = categoryDetailsDto.CategoryId }, categoryDetailsDto);
@@ -53,16 +61,16 @@ public class CategoryControllerSync(
     {
         if (categoryDto == null)
         {
-            logger.LogWarning("Requisição para atualizar categoria recebida com dados inválidos.");
+            _logger.LogWarning("Requisição para atualizar categoria recebida com dados inválidos.");
             return BadRequest("Dados da categoria inválidos.");
         }
 
-        var category = uof.CategoryRepositorySync.GetById(id);
+        var category = _uof.CategoryRepositorySync.GetById(id);
 
         category.Name = categoryDto.Name;
         category.ImageUrl = categoryDto.ImageUrl;
 
-        var updatedCategory = uof.CategoryRepositorySync.Update(category);
+        var updatedCategory = _uof.CategoryRepositorySync.Update(category);
         var categoryDetailsDto = new CategoryDetailsDto(updatedCategory);
 
         return Ok(categoryDetailsDto);
@@ -71,7 +79,7 @@ public class CategoryControllerSync(
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        uof.CategoryRepositorySync.Delete(id);
+        _uof.CategoryRepositorySync.Delete(id);
         return NoContent();
     }
 }
