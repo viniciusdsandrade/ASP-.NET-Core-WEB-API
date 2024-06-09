@@ -7,29 +7,22 @@ namespace APICatalog.Controllers.Async;
 
 [ApiController]
 [Route("api/v1/async/[controller]")]
-public class ProductsControllerAsync : ControllerBase
+public class ProductsControllerAsync(
+    IProductRepositoryAsync repository,
+    ILogger<ProductsControllerAsync> logger) : ControllerBase
 {
-    private readonly IProductRepositoryAsync _repository;
-    private readonly ILogger<ProductsControllerAsync> _logger;
-
-    public ProductsControllerAsync(IProductRepositoryAsync repository, ILogger<ProductsControllerAsync> logger)
-    {
-        _repository = repository;
-        _logger = logger;
-    }
-
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDetailsDto>>> GetProducts(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10
     )
     {
-        _logger.LogInformation("Obtendo produtos. Página: {page}, Tamanho da página: {pageSize}", page, pageSize);
+        logger.LogInformation("Obtendo produtos. Página: {page}, Tamanho da página: {pageSize}", page, pageSize);
 
         if (page <= 0) return BadRequest("Page must be greater than zero.");
         if (pageSize is <= 0 or > 100) return BadRequest("Page size must be between 1 and 100.");
 
-        var products = await _repository.GetProductsAsync(page, pageSize);
+        var products = await repository.GetProductsAsync(page, pageSize);
 
         var productsList = products.ToList();
 
@@ -42,9 +35,9 @@ public class ProductsControllerAsync : ControllerBase
     [HttpGet("name/{name}")]
     public async Task<ActionResult<IEnumerable<ProductDetailsDto>>> GetProductsByName(string name)
     {
-        _logger.LogInformation("Obtendo produtos por nome: {name}", name);
+        logger.LogInformation("Obtendo produtos por nome: {name}", name);
 
-        var products = await _repository.GetProductsByNameAsync(name);
+        var products = await repository.GetProductsByNameAsync(name);
 
         var productsList = products.ToList();
 
@@ -57,13 +50,13 @@ public class ProductsControllerAsync : ControllerBase
     [HttpGet("{id:int}", Name = "GetProductById")]
     public async Task<ActionResult<ProductDetailsDto>> GetProductById(int id)
     {
-        _logger.LogInformation("Obtendo produto por ID: {id}", id);
+        logger.LogInformation("Obtendo produto por ID: {id}", id);
 
-        var product = await _repository.GetProductByIdAsync(id);
+        var product = await repository.GetProductByIdAsync(id);
 
         if (product == null)
         {
-            _logger.LogWarning("Produto com ID {id} não encontrado.", id);
+            logger.LogWarning("Produto com ID {id} não encontrado.", id);
             return NotFound("Product not found.");
         }
 
@@ -73,11 +66,11 @@ public class ProductsControllerAsync : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductDetailsDto>> CreateProduct(ProductDto? productDto)
     {
-        _logger.LogInformation("Criando novo produto.");
+        logger.LogInformation("Criando novo produto.");
 
         if (productDto == null)
         {
-            _logger.LogWarning("Requisição para criar produto recebida com dados inválidos.");
+            logger.LogWarning("Requisição para criar produto recebida com dados inválidos.");
             return BadRequest("Product data is null.");
         }
 
@@ -91,7 +84,7 @@ public class ProductsControllerAsync : ControllerBase
             CategoryId = productDto.CategoryId
         };
 
-        var createdProduct = await _repository.CreateProductAsync(product);
+        var createdProduct = await repository.CreateProductAsync(product);
         var productDetailsDto = new ProductDetailsDto(createdProduct, includeCategoryName: true);
 
         return CreatedAtAction(
@@ -104,11 +97,11 @@ public class ProductsControllerAsync : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult<ProductDetailsDto>> UpdateProduct(int id, ProductDto? productDto)
     {
-        _logger.LogInformation("Atualizando produto com ID {id}.", id);
+        logger.LogInformation("Atualizando produto com ID {id}.", id);
 
         if (productDto == null)
         {
-            _logger.LogWarning("Requisição para atualizar produto com ID {id} recebida com dados inválidos.", id);
+            logger.LogWarning("Requisição para atualizar produto com ID {id} recebida com dados inválidos.", id);
             return BadRequest("Product data is null.");
         }
 
@@ -123,11 +116,11 @@ public class ProductsControllerAsync : ControllerBase
             CategoryId = productDto.CategoryId
         };
 
-        var updatedProduct = await _repository.UpdateProductAsync(id, product);
+        var updatedProduct = await repository.UpdateProductAsync(id, product);
 
         if (updatedProduct == null)
         {
-            _logger.LogWarning("Produto com ID {id} não encontrado para atualização.", id);
+            logger.LogWarning("Produto com ID {id} não encontrado para atualização.", id);
             return NotFound("Product not found.");
         }
 
@@ -141,13 +134,13 @@ public class ProductsControllerAsync : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<ProductDetailsDto>> DeleteProduct(int id)
     {
-        _logger.LogInformation("Excluindo produto com ID {id}.", id);
+        logger.LogInformation("Excluindo produto com ID {id}.", id);
 
-        var deletedProduct = await _repository.DeleteProductAsync(id);
+        var deletedProduct = await repository.DeleteProductAsync(id);
 
         if (deletedProduct == null)
         {
-            _logger.LogWarning("Produto com ID {id} não encontrado para exclusão.", id);
+            logger.LogWarning("Produto com ID {id} não encontrado para exclusão.", id);
             return NotFound("Product not found.");
         }
 

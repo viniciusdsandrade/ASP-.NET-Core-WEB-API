@@ -7,21 +7,14 @@ namespace APICatalog.Controllers.Sync;
 
 [ApiController]
 [Route("api/v1/sync/[controller]")]
-public class CategoryControllerSync : ControllerBase
+public class CategoryControllerSync(
+    ICategoryRepositorySync categoryRepository,
+    ILogger<CategoryControllerSync> logger): ControllerBase
 {
-    private readonly ICategoryRepositorySync _categoryRepository;
-    private readonly ILogger<CategoryControllerSync> _logger;
-
-    public CategoryControllerSync(ICategoryRepositorySync categoryRepository, ILogger<CategoryControllerSync> logger)
-    {
-        _categoryRepository = categoryRepository;
-        _logger = logger;
-    }
-
     [HttpGet]
     public ActionResult<IEnumerable<CategoryDetailsDto>> GetCategories(int page = 1, int pageSize = 10)
     {
-        var categories = _categoryRepository.GetAll(page, pageSize);
+        var categories = categoryRepository.GetAll(page, pageSize);
         var categoriesDto = categories.Select(c => new CategoryDetailsDto(c));
         return Ok(categoriesDto);
     }
@@ -29,11 +22,11 @@ public class CategoryControllerSync : ControllerBase
     [HttpGet("{id:int}", Name = "GetCategoryByIdSync")]
     public ActionResult<CategoryDetailsDto> GetById(int id)
     {
-        var category = _categoryRepository.GetById(id);
+        var category = categoryRepository.GetById(id);
 
         if (category is null)
         {
-            _logger.LogWarning($"Categoria com ID {id} não encontrada.");
+            logger.LogWarning($"Categoria com ID {id} não encontrada.");
             return NotFound($"Categoria com ID {id} não encontrada.");
         }
 
@@ -46,7 +39,7 @@ public class CategoryControllerSync : ControllerBase
     {
         if (categoryDto == null)
         {
-            _logger.LogWarning("Requisição para criar categoria recebida com dados inválidos.");
+            logger.LogWarning("Requisição para criar categoria recebida com dados inválidos.");
             return BadRequest("Dados da categoria inválidos.");
         }
 
@@ -56,7 +49,7 @@ public class CategoryControllerSync : ControllerBase
             ImageUrl = categoryDto.ImageUrl
         };
 
-        var createdCategory = _categoryRepository.Create(category);
+        var createdCategory = categoryRepository.Create(category);
         var categoryDetailsDto = new CategoryDetailsDto(createdCategory);
 
         return CreatedAtRoute("GetCategoryByIdSync", new { id = createdCategory.CategoryId }, categoryDetailsDto);
@@ -67,7 +60,7 @@ public class CategoryControllerSync : ControllerBase
     {
         if (categoryDto == null)
         {
-            _logger.LogWarning($"Requisição para atualizar categoria com ID {id} recebida com dados inválidos.");
+            logger.LogWarning($"Requisição para atualizar categoria com ID {id} recebida com dados inválidos.");
             return BadRequest("Dados da categoria inválidos.");
         }
 
@@ -78,7 +71,7 @@ public class CategoryControllerSync : ControllerBase
             ImageUrl = categoryDto.ImageUrl
         };
 
-        var updatedCategory = _categoryRepository.Update(category);
+        var updatedCategory = categoryRepository.Update(category);
         var categoryDetailsDto = new CategoryDetailsDto(updatedCategory);
 
         return Ok(categoryDetailsDto);
@@ -87,7 +80,7 @@ public class CategoryControllerSync : ControllerBase
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        _categoryRepository.Delete(id);
+        categoryRepository.Delete(id);
         return NoContent();
     }
 }

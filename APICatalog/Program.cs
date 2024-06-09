@@ -5,7 +5,7 @@ using APICatalog.Handler;
 using APICatalog.Logging;
 using APICatalog.Repositories.Async;
 using APICatalog.Repositories.Generic;
-using APICatalog.Repositories.Sync; // Adicione este using
+using APICatalog.Repositories.Sync;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +25,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string? mySqlConnectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
+var mySqlConnectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(mySqlConnectionStr,
@@ -37,7 +37,7 @@ builder.Services.AddScoped<ICategoryRepositorySync, CategoryRepositorySync>();
 builder.Services.AddScoped<IProductRepositorySync, ProductRepositorySync>();
 builder.Services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
 builder.Services.AddScoped(typeof(IRepositorySync<>), typeof(RepositorySync<>));
-
+builder.Services.AddScoped<ApiExceptionFilter>();
 builder.Services.AddScoped<ApiLoggingFilterSync>();
 builder.Services.AddScoped<ApiLoggingFilterAsync>();
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace APICatalog.Handler;
 
-public abstract class ApiExceptionFilter(ILogger<ApiExceptionFilter> logger) : IExceptionFilter
+public class ApiExceptionFilter(ILogger<ApiExceptionFilter> logger) : IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {

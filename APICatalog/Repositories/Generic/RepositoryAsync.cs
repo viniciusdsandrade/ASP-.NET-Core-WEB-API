@@ -16,7 +16,7 @@ public class RepositoryAsync<T> : IRepositoryAsync<T> where T : class
 
     public async Task<IQueryable<T>> GetAllQueryable() => await Task.Run(() => DbSet.AsQueryable());
 
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(int id)
     {
         var entity = await DbSet.FindAsync(id);
         if (entity == null)
