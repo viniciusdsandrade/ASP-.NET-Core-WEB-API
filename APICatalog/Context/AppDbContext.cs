@@ -18,7 +18,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             optionsBuilder.UseMySql(
                 "Server=localhost;Database=db_catalog_api;Uid=root;Pwd=GhostSthong567890@",
                 ServerVersion.AutoDetect("Server=localhost;Database=db_catalog_api;Uid=root;Pwd=GhostSthong567890@"),
-                options => options.SchemaBehavior(MySqlSchemaBehavior.Ignore));
+                options => options.SchemaBehavior(MySqlSchemaBehavior.Ignore)
+            );
         }
     }
 

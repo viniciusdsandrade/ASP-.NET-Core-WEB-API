@@ -41,7 +41,7 @@ public class ApiLoggingFilterSync : IActionFilter
         _logger.LogInformation(
             $"StatusCode: {context.HttpContext.Response.StatusCode} ({context.HttpContext.Response.StatusCode})");
         _logger.LogInformation($"Tempo total de execução: {_stopwatch.ElapsedMilliseconds}ms");
-        _logger.LogInformation($"--------------------------------------------------------");
+        _logger.LogInformation("--------------------------------------------------------");
 
         if (context.Exception != null)
         {

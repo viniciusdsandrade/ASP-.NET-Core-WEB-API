@@ -17,6 +17,7 @@ public class Category
     [StringLength(300, ErrorMessage = "A descrição deve ter no máximo 300 caracteres")]
     public string? ImageUrl { get; set; }
 
-    // Incluimos uma propriedade ede navegação onde definimos que uma Categori pode conter uma coleção de Produtos
+    // Incluimos uma propriedade ede navegação onde definimos que uma Categoria
+    // pode conter uma coleção de Produtos
     public ICollection<Product>? Products { get; init; }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+wO3+G0e/GEDiQ0usICzZhZM2zel9IaWShlyfreokAgyTPuy8DJ5RLCsWV+JFwtLLYbFpJWZxgOS4eceSfm3Mg==",
+  "dgSpecHash": "f0zXaD9hcg/0WTQad1YANCo0ZX4hwFODUirjeIn6HGvrUbw3RIEQPw70dVYaEa8tGgwUGQfRMDsO9zzKew9zyA==",
   "success": true,
   "projectFilePath": "C:\\Users\\vinic\\OneDrive\\Área de Trabalho\\ASP-.NET-Core-WEB-API\\APICatalog\\APICatalog.csproj",
   "expectedPackageFiles": [
@@ -115,6 +115,7 @@
     "C:\\Users\\vinic\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "C:\\Users\\vinic\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
     "C:\\Users\\vinic\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.4.0\\swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512",
+    "C:\\Users\\vinic\\.nuget\\packages\\swashbukle.aspnetcore\\2.0.0\\swashbukle.aspnetcore.2.0.0.nupkg.sha512",
     "C:\\Users\\vinic\\.nuget\\packages\\system.codedom\\5.0.0\\system.codedom.5.0.0.nupkg.sha512",
     "C:\\Users\\vinic\\.nuget\\packages\\system.collections.immutable\\7.0.0\\system.collections.immutable.7.0.0.nupkg.sha512",
     "C:\\Users\\vinic\\.nuget\\packages\\system.composition\\7.0.0\\system.composition.7.0.0.nupkg.sha512",

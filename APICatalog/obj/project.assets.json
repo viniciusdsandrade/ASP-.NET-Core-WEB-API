@@ -1857,6 +1857,18 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Swashbukle.AspNetCore/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Swashbuckle.AspNetCore": "6.2.3"
+        },
+        "compile": {
+          "lib/net6.0/Swashbukle.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/Swashbukle.AspNetCore.dll": {}
+        }
+      },
       "System.CodeDom/5.0.0": {
         "type": "package",
         "compile": {
@@ -5983,6 +5995,20 @@
         "swashbuckle.aspnetcore.swaggerui.nuspec"
       ]
     },
+    "Swashbukle.AspNetCore/2.0.0": {
+      "sha512": "g9bdxGyi9//kNLDmzqS+nlYZNDN8FmoPN3QVELXoC9A2QDX58/xx6qdZESiQ14uFLKgoU5pxPaWRtFhbUj4g5Q==",
+      "type": "package",
+      "path": "swashbukle.aspnetcore/2.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "lib/net6.0/Swashbukle.AspNetCore.dll",
+        "swashbukle.aspnetcore.2.0.0.nupkg.sha512",
+        "swashbukle.aspnetcore.nuspec"
+      ]
+    },
     "System.CodeDom/5.0.0": {
       "sha512": "JPJArwA1kdj8qDAkY2XGjSWoYnqiM7q/3yRNkt6n28Mnn95MuEGkZXUbPBf7qc3IjwrGY5ttQon7yqHZyQJmOQ==",
       "type": "package",
@@ -6792,7 +6818,8 @@
       "Microsoft.EntityFrameworkCore.Tools >= 8.0.4",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 8.0.2",
       "Pomelo.EntityFrameworkCore.MySql >= 8.0.2",
-      "Swashbuckle.AspNetCore >= 6.4.0"
+      "Swashbuckle.AspNetCore >= 6.4.0",
+      "Swashbukle.AspNetCore >= 2.0.0"
     ]
   },
   "packageFolders": {
@@ -6861,6 +6888,10 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[6.4.0, )"
+          },
+          "Swashbukle.AspNetCore": {
+            "target": "Package",
+            "version": "[2.0.0, )"
           }
         },
         "imports": [

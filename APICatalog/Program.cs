@@ -6,10 +6,10 @@ using APICatalog.Logging;
 using APICatalog.Repositories.Async;
 using APICatalog.Repositories.Generic;
 using APICatalog.Repositories.Sync;
-using APICatalog.Repositories.UnitOfWork;
 using APICatalog.Repositories.UnitOfWork.Async;
 using APICatalog.Repositories.UnitOfWork.Sync;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +45,27 @@ builder.Services.AddScoped<ApiLoggingFilterSync>();
 builder.Services.AddScoped<ApiLoggingFilterAsync>();
 builder.Services.AddScoped<IUnitOfWorkAsync, UnitOfWorkAsync>();
 builder.Services.AddScoped<IUnitOfWorkSync, UnitOfWorkSync>();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "APICatalog",
+        Version = "v1.0.0",
+        Description = "API de Catálogo de Produtos e Categorias",
+        TermsOfService = new Uri("https://github.com/viniciusdsandrade/ASP-.NET-Core-WEB-API"),
+        Contact = new OpenApiContact
+        {
+            Name = "Vinícius Andrade",
+            Email = "vinicius_andrade2010@hotmail.com",
+            Url = new Uri("https://www.linkedin.com/in/viniciusdsandrade/"),
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Github",
+            Url = new Uri("https://github.com/viniciusdsandrade")
+        }
+    });
+});
 
 builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
 {
@@ -57,15 +78,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(
+        c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "APICatalog v1")
+    );
 }
 
+app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Configurar o ExceptionHandler CORRETAMENTE
-app.ConfigureExceptionHandler();
+app.MapControllers();
 
 app.Use(async (context, next) =>
 {
@@ -73,7 +95,5 @@ app.Use(async (context, next) =>
     await next();
     // adicionar o código depois do request
 });
-
-app.MapControllers();
 
 app.Run();

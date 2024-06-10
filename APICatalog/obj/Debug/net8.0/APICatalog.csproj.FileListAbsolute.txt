@@ -284,6 +284,7 @@ C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\D
 C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\Swashbukle.AspNetCore.dll
 C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\System.CodeDom.dll
 C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 C:\Users\vinic\OneDrive\Área de Trabalho\ASP-.NET-Core-WEB-API\APICatalog\bin\Debug\net8.0\System.Composition.Convention.dll
